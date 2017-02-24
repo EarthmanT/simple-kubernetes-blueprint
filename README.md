@@ -1,6 +1,6 @@
 [![Build Status](https://circleci.com/gh/cloudify-examples/simple-kubernetes-blueprint.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/cloudify-examples/simple-kubernetes-blueprint)
 
-## Docker Swarm Example Blueprint
+##  Simple Kubernetes Example Blueprint
 
 The blueprints in this project provide orchestration for starting, healing, and scaling a [Kubernetes](https://kubenretes.io/) cluster on Openstack.  There are 2 blueprints, with slightly different use cases:
 * **openstack-blueprint.yaml** : an Openstack bluieprint that orchestrates setup, teardown, autohealing, and autoscaling of the cluster
