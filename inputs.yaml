@@ -1,0 +1,3 @@
+image: ''    # Ubuntu 14.04 image Docker 11 installed, and passwordless sudo,ssh, and sudo over ssh enabled
+flavor: ''   # Depends on cluster needs.  At least 2GB RAM
+agent_user: ubuntu
