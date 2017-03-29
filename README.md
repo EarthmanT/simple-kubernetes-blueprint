@@ -12,9 +12,12 @@ These blueprints have only been tested against an Ubuntu 14.04 image with 2GB of
 
 ### Cloudify Version
 
-These blueprints were tested on Cloudify 3.4.0.
+These blueprints were tested on Cloudify 3.4.0 and on Cloudify 4.0.
 
 ### Operation
+
+Cloudify 4.0:
+* Run `cfy install [path-to-blueprint-file] -i [path-to-inputs-file]`
 
 #### openstack-blueprint.yaml instructions
 
