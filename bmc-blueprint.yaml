@@ -122,7 +122,7 @@ node_templates:
       public_key_file: ~/.ssh/dfilppi-dc.key.pub
       image_id: { get_input: master_image }
       instance_shape: { get_input: master_shape }
-      compartment_id: ocid1.compartment.oc1..aaaaaaaajsml6kkyoa4b7rp3rrrdjxw5s5j4fgmqyao5zsdi574rfzihjmma
+      compartment_id: ''
       availability_domain: { get_input: availability_domain }
     relationships:
       - type: cloudify.oraclebmc.relationships.instance_connected_to_subnet
@@ -139,7 +139,7 @@ node_templates:
       public_key_file: ~/.ssh/dfilppi-dc.key.pub
       image_id: { get_input: worker_image }
       instance_shape: { get_input: worker_shape }
-      compartment_id: ocid1.compartment.oc1..aaaaaaaajsml6kkyoa4b7rp3rrrdjxw5s5j4fgmqyao5zsdi574rfzihjmma
+      compartment_id: ''
       availability_domain: { get_input: availability_domain }
     relationships:
       - type: cloudify.oraclebmc.relationships.instance_connected_to_subnet
@@ -165,14 +165,14 @@ node_templates:
     properties:
       bmc_config: *bmc_config
       use_external_resource: true
-      resource_id: ocid1.vcn.oc1.phx.aaaaaaaa3l376nge53j3mptidcjdltbdit7b5x5mjw5bb7ctonykw2cbrqtq
+      resource_id: ''
 
   subnet:
     type: cloudify.oraclebmc.nodes.Subnet
     properties:
       bmc_config: *bmc_config
       name: kubernetes_subnet
-      compartment_id: ocid1.compartment.oc1..aaaaaaaajsml6kkyoa4b7rp3rrrdjxw5s5j4fgmqyao5zsdi574rfzihjmma
+      compartment_id: ''
       cidr_block: 10.10.20.0/24
       availability_domain: vNkz:PHX-AD-2
       security_rules: 
@@ -194,7 +194,7 @@ node_templates:
   gateway:
     type: cloudify.oraclebmc.nodes.Gateway
     properties:
-      resource_id: ocid1.internetgateway.oc1.phx.aaaaaaaaq42e4hy4wppxzqcrgyjwzrrn3aze2h6jadqh3yindpylgihhpwxa
+      resource_id: ''
       use_external_resource: true
       bmc_config: *bmc_config
     relationships:
