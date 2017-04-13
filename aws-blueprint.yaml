@@ -267,6 +267,10 @@ node_templates:
 
 groups:
 
+  k8s_node_scale_group:
+    members:
+      - kubernetes_node_host
+
  scale_up_group:
    members: [kubernetes_node_host]
     # This defines a scale group whose members may be scaled up, incrementing by 1.
@@ -343,6 +347,12 @@ groups:
              workflow_parameters:
                node_instance_id: { 'get_property': [ SELF, node_id ] }
                diagnose_value: { 'get_property': [ SELF, diagnose ] }
+
+  kubernetes_node_vms_scaling_policy:
+    type: cloudify.policies.scaling
+    properties:
+      default_instances:  1
+    targets: [k8s_node_scale_group]
 
 outputs:
   kubernetes_info:

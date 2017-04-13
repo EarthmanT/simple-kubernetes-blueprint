@@ -623,8 +623,7 @@ groups:
               workflow: scale
               workflow_parameters:
                 delta: 1
-                scalable_entity_name: kubernetes_node
-                scale_compute: true
+                scalable_entity_name: azure_k8s_node_scale_group
 
   scale_down_group:
   # This defines a scale group whose members may be scaled down. Only one host will be removed per run.
@@ -650,8 +649,7 @@ groups:
              workflow: scale
              workflow_parameters:
                delta: -1
-               scalable_entity_name: kubernetes_node
-               scale_compute: true
+                 scalable_entity_name: azure_k8s_node_scale_group
 
   heal_group:
   # This defines a group of hosts in members that may be healed.
