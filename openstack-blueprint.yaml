@@ -288,8 +288,8 @@ groups:
 
   k8s_node_scale_group:
     members:
-      - kubernetes_node_port
       - kubernetes_node_host
+      - kubernetes_node_port
 
   scale_up_group:
     members: [kubernetes_node_host]
@@ -315,34 +315,36 @@ groups:
               workflow: scale
               workflow_parameters:
                 delta: 1
-                scalable_entity_name: k8s_node_scale_group
+                scalable_entity_name: kubernetes_node
+                scale_compute: true
 
   scale_down_group:
-  # This defines a scale group whose members may be scaled down. Only one host will be removed per run.
-  # The scale worflow is called when the following criteria are met
-  # The Hyperkube process total CPU will be less than 1 for a total of 200 seconds.
-  # No less than 2 hosts will be allowed.
     members: [kubernetes_node_host]
+    # This defines a scale group whose members may be scaled up, incrementing by 1.
+    # The scale worflow is called when the following criteria are met
+    # The Hyperkube process total CPU will be more than 3 for a total of 10 seconds.
+    # No more than 6 hosts will be allowed.
     policies:
       auto_scale_down:
         type: scale_policy_type
         properties:
-          scale_limit: 2
-          scale_direction: '>'
-          scale_threshold: 25
-          #service_selector: .*kubernetes_node_host.*.process.hyperkube.cpu.percent
+          policy_operates_on_group: true
+          scale_limit: 6
+          scale_direction: '<'
+          scale_threshold: 30
+          #service_selector: .*kubernetes_node_host.*.cpu.total.user
           service_selector: .*kubernetes_node_host.*cpu.total.user
           cooldown_time: 60
-          moving_window_size: 30
         triggers:
           execute_scale_workflow:
-           type: cloudify.policies.triggers.execute_workflow
-           parameters:
-             workflow: scale
-             workflow_parameters:
-               delta: -1
-                scalable_entity_name: k8s_node_scale_group
-
+            type: cloudify.policies.triggers.execute_workflow
+            parameters:
+              workflow: scale
+              workflow_parameters:
+                delta: 1
+                scalable_entity_name: kubernetes_node
+                scale_compute: true
+ 
   heal_group:
   # This defines a group of hosts in members that may be healed.
   # The heal workflow is called when a the following policy criteria are met.
@@ -364,7 +366,7 @@ groups:
               workflow: heal
               workflow_parameters:
                 node_instance_id: { 'get_property': [ SELF, node_id ] }
-                diagnose_value: { 'get_property': [ SELF, diagnose ] }
+                diagnose_value: { 'get_property': [ SELF, diagnose ] } 
 
 policies:
 
