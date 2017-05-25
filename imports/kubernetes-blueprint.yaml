@@ -6,20 +6,26 @@ node_templates:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
       cloudify.interfaces.lifecycle:
-        create:
-          implementation: scripts/docker_install.py # Install Docker if not already installed.
         start:
-          implementation: fabric.fabric_plugin.tasks.run_commands
+          implementation: fabric.fabric_plugin.tasks.run_task
           inputs:
             fabric_env:
               host_string: { get_attribute: [ kubernetes_master_host, ip ] }
               user: { get_input: agent_user }
               key_filename: { get_input: private_key_path }
-            commands:
-              - "curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-              - "chmod +x kubectl"
-              - "rm -rf kube-deploy"
-              - "curl -L https://github.com/kubernetes/kube-deploy/archive/master.tar.gz | tar xz && cd kube-deploy-master/docker-multinode;sudo ./master.sh"
+            tasks_file: scripts/fabric_tasks.py
+            task_name: start_master                
+            task_properties:
+              k8s_settings:
+                k8s_version: v1.3.0
+                etcd_version: 2.2.5
+                flannel_version: v0.6.2
+                flannel_ipmasq: 'true'
+                flannel_network: 10.1.0.0/16
+                flannel_backend: udp
+                restart_policy: unless-stopped
+                arch: amd64
+                net_interface: eth0
     relationships:
       - type: cloudify.relationships.contained_in
         target: kubernetes_master_host
@@ -28,18 +34,27 @@ node_templates:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
       cloudify.interfaces.lifecycle:
-        create:
-          implementation: scripts/docker_install.py # Install Docker if not already installed.
         start:
-          implementation: fabric.fabric_plugin.tasks.run_commands
+          implementation: fabric.fabric_plugin.tasks.run_task
           inputs:
             fabric_env:
               host_string: { get_attribute: [ kubernetes_node_host, ip ] }
               user: { get_input: agent_user }
               key_filename: { get_input: private_key_path }
-            commands:
-              - "rm -rf kube-deploy"
-              - { concat: [ "curl -L https://github.com/kubernetes/kube-deploy/archive/master.tar.gz | tar xz && cd kube-deploy-master/docker-multinode;sudo MASTER_IP=", { get_attribute: [ kubernetes_master_host, ip ] }," ./worker.sh" ] }
+            tasks_file: scripts/fabric_tasks.py
+            task_name: start_worker
+            task_properties:
+              master_ip: { get_attribute: [ kubernetes_master_host, ip ] }
+              k8s_settings:
+                k8s_version: v1.3.0
+                etcd_version: 2.2.5
+                flannel_version: v0.6.2
+                flannel_ipmasq: 'true'
+                flannel_network: 10.1.0.0/16
+                flannel_backend: udp
+                restart_policy: unless-stopped
+                arch: amd64
+                net_interface: eth0
     relationships:
       - type: cloudify.relationships.depends_on
         target: kubernetes_master
