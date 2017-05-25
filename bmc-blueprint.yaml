@@ -76,7 +76,7 @@ node_templates:
               user: { get_input: ssh_user }
               key_filename: { get_input: ssh_keyfile }
             tasks_file: scripts/fabric_tasks.py
-            task_name: start_master                
+            task_name: start_master_bmc                
             task_properties:
               k8s_settings:
                 k8s_version: v1.3.0
@@ -104,7 +104,7 @@ node_templates:
               user: { get_input: ssh_user }
               key_filename: { get_input: ssh_keyfile }
             tasks_file: scripts/fabric_tasks.py
-            task_name: start_worker
+            task_name: start_worker_bmc
             task_properties:
               master_ip: { get_attribute: [ master_host, ip ] }
               k8s_settings:
