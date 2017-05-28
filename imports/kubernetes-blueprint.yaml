@@ -6,6 +6,8 @@ node_templates:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
       cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/docker_install.py # Install Docker if not already installed.
         start:
           implementation: fabric.fabric_plugin.tasks.run_task
           inputs:
@@ -34,6 +36,8 @@ node_templates:
     type: cloudify.nodes.SoftwareComponent
     interfaces:
       cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/docker_install.py # Install Docker if not already installed.
         start:
           implementation: fabric.fabric_plugin.tasks.run_task
           inputs:
