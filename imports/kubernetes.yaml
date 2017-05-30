@@ -1,0 +1,81 @@
+node_templates:
+
+  kubernetes_master:
+    type: cloudify.nodes.Kubernetes.Master
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: kubernetes_master_host
+
+  kubernetes_node:
+    type: cloudify.nodes.Kubernetes.Node
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: kubernetes_node_host
+      - type: cloudify.relationships.depends_on
+        target: kubernetes_master
+
+groups:
+
+  scale_up_group:
+    members: [kubernetes_node_host]
+    policies:
+      auto_scale_up:
+        type: scale_policy_type
+        properties:
+          policy_operates_on_group: true
+          scale_limit: 6
+          scale_direction: '<'
+          scale_threshold: 30
+          service_selector: .*kubernetes_node_host.*cpu.total.user
+          cooldown_time: 60
+        triggers:
+          execute_scale_workflow:
+            type: cloudify.policies.triggers.execute_workflow
+            parameters:
+              workflow: scale
+              workflow_parameters:
+                delta: 1
+                scalable_entity_name: kubernetes_node
+                scale_compute: true
+
+  scale_down_group:
+    members: [kubernetes_node_host]
+    policies:
+      auto_scale_down:
+        type: scale_policy_type
+        properties:
+          policy_operates_on_group: true
+          scale_limit: 6
+          scale_direction: '<'
+          scale_threshold: 30
+          #service_selector: .*kubernetes_node_host.*.cpu.total.user
+          service_selector: .*kubernetes_node_host.*cpu.total.user
+          cooldown_time: 60
+        triggers:
+          execute_scale_workflow:
+            type: cloudify.policies.triggers.execute_workflow
+            parameters:
+              workflow: scale
+              workflow_parameters:
+                delta: 1
+                scalable_entity_name: kubernetes_node
+                scale_compute: true
+
+  heal_group:
+    members: [kubernetes_node_host]
+    policies:
+      simple_autoheal_policy:
+        type: cloudify.policies.types.host_failure
+        properties:
+          service:
+            - .*kubernetes_node_host.*.cpu.total.system
+            - .*kubernetes_node_host.*.process.hyperkube.cpu.percent
+          interval_between_workflows: 60
+        triggers:
+          auto_heal_trigger:
+            type: cloudify.policies.triggers.execute_workflow
+            parameters:
+              workflow: heal
+              workflow_parameters:
+                node_instance_id: { 'get_property': [ SELF, node_id ] }
+                diagnose_value: { 'get_property': [ SELF, diagnose ] }

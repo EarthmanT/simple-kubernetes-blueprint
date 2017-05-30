@@ -1,0 +1,28 @@
+node_types:
+
+  cloudify.nodes.Kubernetes:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+
+  cloudify.nodes.Kubernetes.Master:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/configure_master.py
+        start:
+          implementation: scripts/start_master.py
+
+  cloudify.nodes.Kubernetes.Node:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/configure_node.py
