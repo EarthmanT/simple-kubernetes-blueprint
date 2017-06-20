@@ -35,8 +35,7 @@ groups:
               workflow: scale
               workflow_parameters:
                 delta: 1
-                scalable_entity_name: kubernetes_node
-                scale_compute: true
+                scalable_entity_name: kubernetes_node_host
 
   scale_down_group:
     members: [kubernetes_node_host]
@@ -48,7 +47,6 @@ groups:
           scale_limit: 6
           scale_direction: '<'
           scale_threshold: 30
-          #service_selector: .*kubernetes_node_host.*.cpu.total.user
           service_selector: .*kubernetes_node_host.*cpu.total.user
           cooldown_time: 60
         triggers:
@@ -58,8 +56,7 @@ groups:
               workflow: scale
               workflow_parameters:
                 delta: 1
-                scalable_entity_name: kubernetes_node
-                scale_compute: true
+                scalable_entity_name: kubernetes_node_host
 
   heal_group:
     members: [kubernetes_node_host]
