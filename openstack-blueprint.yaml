@@ -152,7 +152,21 @@ node_templates:
       - remote_ip_prefix: 0.0.0.0/0
         port: 4001
       - remote_ip_prefix: 0.0.0.0/0
+        port: 4789
+      - remote_ip_prefix: 0.0.0.0/0
         port: 6443
+      - remote_ip_prefix: 0.0.0.0/0
+        port: 6783
+        protocol: tcp
+      - remote_ip_prefix: 0.0.0.0/0
+        port: 6783
+        protocol: udp
+      - remote_ip_prefix: 0.0.0.0/0
+        port: 6784
+        protocol: tcp
+      - remote_ip_prefix: 0.0.0.0/0
+        port: 6784
+        protocol: udp
       - remote_ip_prefix: 0.0.0.0/0
         port: 8000
       - remote_ip_prefix: 0.0.0.0/0

@@ -41,3 +41,10 @@ if __name__ == '__main__':
     join_command = ctx_master.target.instance.runtime_properties['join_command']
     join_command = 'sudo {0} --skip-preflight-checks'.format(join_command)
     execute_command(join_command)
+
+    # Install weave-related utils
+    execute_command('sudo curl -L git.io/weave -o /usr/local/bin/weave')
+    execute_command('sudo chmod a+x /usr/local/bin/weave')
+    execute_command('sudo curl -L git.io/scope -o /usr/local/bin/scope')
+    execute_command('sudo chmod a+x /usr/local/bin/scope')
+    execute_command('scope launch')
