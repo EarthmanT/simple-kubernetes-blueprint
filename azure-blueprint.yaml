@@ -7,14 +7,10 @@ description: >
 # Several lines are commented. Currently there is not a Centos 7 image that supports Cloud Init. When there is, we will replace the current docker/kubernetes installation method with the commented lines.
 
 imports:
-  - http://www.getcloudify.org/spec/cloudify/4.0.1/types.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-manager/4.1/resources/rest-service/cloudify/types/types.yaml
   - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-azure-plugin/1.4.3/plugin.yaml
   - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
-  - types/scale.yaml
-#  - types/cloud_config/cloud-config.yaml
-  - types/kubernetes.yaml
   - imports/kubernetes.yaml
-#  - imports/cloud-config.yaml
 
 inputs:
 

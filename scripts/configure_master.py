@@ -6,6 +6,7 @@ import os
 import getpass
 import subprocess
 from cloudify import ctx
+from cloudify.exceptions import OperationRetry
 
 
 def execute_command(_command):
@@ -39,6 +40,9 @@ if __name__ == '__main__':
 
     # Start the Kube Master
     start_output = execute_command('sudo kubeadm init --skip-preflight-checks')
+    if isinstance(start_output, bool):
+        execute_command('sudo kubeadm reset')
+        raise OperationRetry('Restarting kubernetes because of a problem.')
     for line in start_output.split('\n'):
         if 'kubeadm join' in line:
             ctx.instance.runtime_properties['join_command'] = line.lstrip()
@@ -62,4 +66,4 @@ if __name__ == '__main__':
     execute_command('sudo chmod a+x /usr/local/bin/weave')
     execute_command('sudo curl -L git.io/scope -o /usr/local/bin/scope')
     execute_command('sudo chmod a+x /usr/local/bin/scope')
-    execute_command('scope launch')
+    execute_command('/usr/local/bin/scope launch')

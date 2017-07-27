@@ -1,3 +1,32 @@
+node_types:
+
+  cloudify.nodes.Kubernetes:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+
+  cloudify.nodes.Kubernetes.Master:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/configure_master.py
+        start:
+          implementation: scripts/start_master.py
+
+  cloudify.nodes.Kubernetes.Node:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/configure_node.py
+
 node_templates:
 
   kubernetes_master:
@@ -18,6 +47,31 @@ outputs:
 
   kubernetes_master_configuration:
     value: { get_attribute: [ kubernetes_master, configuration_file_content ] }
+
+
+policy_types:
+  scale_policy_type:
+    source: policies/scale.clj
+    properties:
+      policy_operates_on_group:
+        default: true
+      service_selector:
+        description: regular expression that selects the metric to be measured
+        default: ".*"
+      moving_window_size:
+        description: the moving window for individual sources in secs
+        default: 10
+      scale_threshold:
+        description: the value to trigger scaling over aggregrated moving values
+      scale_limit:
+        description: scaling limit
+        default: 10
+      scale_direction:
+        description: scale up ('<') or scale down ('>')
+        default: '<'
+      cooldown_time:
+        description: the time to wait before evaluating again after a scale
+        default: 60
 
 groups:
 
