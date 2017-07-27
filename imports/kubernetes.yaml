@@ -14,6 +14,11 @@ node_templates:
       - type: cloudify.relationships.depends_on
         target: kubernetes_master
 
+outputs:
+
+  kubernetes_master_configuration:
+    value: { get_attribute: [ kubernetes_master, configuration_file_content ] }
+
 groups:
 
   scale_up_group:

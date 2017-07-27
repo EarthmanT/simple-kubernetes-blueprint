@@ -5,11 +5,11 @@ description: >
   It is based on this documentation: https://kubernetes.io/docs/getting-started-guides/kubeadm/
 
 imports:
-  - http://www.getcloudify.org/spec/cloudify/4.0.1/types.yaml
-  - http://getcloudify.org.s3.amazonaws.com/spec/aws-plugin/1.4.9/plugin.yaml
-  - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-manager/4.1/resources/rest-service/cloudify/types/types.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-aws-plugin/1.4.13/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-incubator/cloudify-utilities-plugin/1.2.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-diamond-plugin/1.3.5/plugin.yaml
   - types/scale.yaml
-  - types/cloud_config/cloud-config.yaml
   - types/kubernetes.yaml
   - imports/kubernetes.yaml
   - imports/cloud-config.yaml

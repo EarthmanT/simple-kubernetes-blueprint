@@ -5,31 +5,30 @@ description: >
   It is based on this documentation: https://kubernetes.io/docs/getting-started-guides/kubeadm/
 
 imports:
-  - http://www.getcloudify.org/spec/cloudify/4.0.1/types.yaml
-  - http://www.getcloudify.org/spec/openstack-plugin/2.0.1/plugin.yaml
-  - http://www.getcloudify.org/spec/fabric-plugin/1.3.1/plugin.yaml
-  - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-manager/4.1/resources/rest-service/cloudify/types/types.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-openstack-plugin/2.2.0/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-incubator/cloudify-utilities-plugin/1.2.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-fabric-plugin/1.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-diamond-plugin/1.3.5/plugin.yaml
   - types/scale.yaml
-  - types/cloud_config/cloud-config.yaml
   - types/kubernetes.yaml
-  - imports/kubernetes.yaml
   - imports/cloud-config.yaml
+  - imports/kubernetes.yaml
 
 inputs:
 
   image:
     description: Image to be used when launching agent VMs
+    default: { get_secret: centos_core_image }
 
   flavor:
     description: Flavor of the agent VMs
+    default: { get_secret: large_image_flavor }
 
   agent_user:
     description: >
       User for connecting to agent VMs
     default: centos
-
-  encode_cloud_config:
-    default: false
 
 dsl_definitions:
 
