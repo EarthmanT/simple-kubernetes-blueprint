@@ -334,6 +334,17 @@ node_templates:
             priority: 108
             access: Allow
             direction: Inbound
+        - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},4789tcp]}
+          properties:
+            description: 4789 TCP access
+            protocol: Tcp
+            sourcePortRange: '*'
+            destinationPortRange: 4789
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+            priority: 1080
+            access: Allow
+            direction: Inbound
         - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},6443tcp]}
           properties:
             description: 6443 TCP access
@@ -343,6 +354,50 @@ node_templates:
             sourceAddressPrefix: '*'
             destinationAddressPrefix: '*'
             priority: 109
+            access: Allow
+            direction: Inbound
+        - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},6783tcp]}
+          properties:
+            description: 6783 TCP access
+            protocol: Tcp
+            sourcePortRange: '*'
+            destinationPortRange: 6783
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+            priority: 1090
+            access: Allow
+            direction: Inbound
+        - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},6784tcp]}
+          properties:
+            description: 6784 TCP access
+            protocol: Tcp
+            sourcePortRange: '*'
+            destinationPortRange: 6784
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+            priority: 1091
+            access: Allow
+            direction: Inbound
+        - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},6783udp]}
+          properties:
+            description: 6783 UDP access
+            protocol: Udp
+            sourcePortRange: '*'
+            destinationPortRange: 6783
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+            priority: 1092
+            access: Allow
+            direction: Inbound
+        - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},6784udp]}
+          properties:
+            description: 6784 UDP access
+            protocol: Udp
+            sourcePortRange: '*'
+            destinationPortRange: 6784
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+            priority: 1093
             access: Allow
             direction: Inbound
         - name: {concat:[{get_input: resource_prefix},nsg,{get_input: resource_suffix},8000tcp]}

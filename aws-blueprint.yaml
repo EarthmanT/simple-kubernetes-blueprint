@@ -168,12 +168,24 @@ node_templates:
           to_port: 4001
           cidr_ip: 0.0.0.0/0
         - ip_protocol: tcp
+          from_port: 4789
+          to_port: 4789
+          cidr_ip: 0.0.0.0/0
+        - ip_protocol: tcp
           from_port: 6443
           to_port: 6443
           cidr_ip: 0.0.0.0/0
         - ip_protocol: tcp
-          from_port: 8000
-          to_port: 8000
+          from_port: 6443
+          to_port: 6443
+          cidr_ip: 0.0.0.0/0
+        - ip_protocol: tcp
+          from_port: 6783
+          to_port: 6784
+          cidr_ip: 0.0.0.0/0
+        - ip_protocol: udp
+          from_port: 6783
+          to_port: 6784
           cidr_ip: 0.0.0.0/0
         - ip_protocol: tcp
           from_port: 8080
