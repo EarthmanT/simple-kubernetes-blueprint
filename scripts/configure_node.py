@@ -47,4 +47,4 @@ if __name__ == '__main__':
     execute_command('sudo chmod a+x /usr/local/bin/weave')
     execute_command('sudo curl -L git.io/scope -o /usr/local/bin/scope')
     execute_command('sudo chmod a+x /usr/local/bin/scope')
-    execute_command('scope launch')
+    execute_command('/usr/local/bin/scope launch')
