@@ -39,3 +39,6 @@ node_templates:
           - [ systemctl, start, docker ]
           - [ systemctl, enable, kubelet ]
           - [ systemctl, start, kubelet ]
+          - [ mkdir, '-p', /tmp/data ]
+          - [ chmod, 'a+rwtp', /tmp/data ]
+          - [ chcon, '-Rt', svirt_sandbox_file_t, /tmp/data ]

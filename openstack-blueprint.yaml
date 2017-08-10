@@ -278,3 +278,8 @@ policies:
     properties:
       default_instances:  2
     targets: [k8s_node_group]
+
+outputs:
+
+  kubernetes_master_public_ip:
+    value: { get_attribute: [ kubernetes_master_ip, floating_ip_address ] }

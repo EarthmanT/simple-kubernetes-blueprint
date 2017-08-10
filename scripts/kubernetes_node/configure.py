@@ -2,6 +2,7 @@
 
 import subprocess
 from cloudify import ctx
+from cloudify.exceptions import NonRecoverableError
 
 START_COMMAND = 'sudo kubeadm join --token {0} {1}:{2}'
 
@@ -35,11 +36,30 @@ def execute_command(_command):
 
 if __name__ == '__main__':
 
+    hostname = execute_command('hostname')
+    ctx.instance.runtime_properties['hostname'] = hostname.rstrip('\n')
+
+    # Get the master cluster info.
     masters = \
-        [x for x in ctx.instance.relationships if 'cloudify.nodes.Kubernetes.Master' in x.target.node.type_hierarchy]
-    ctx_master = masters[0]
-    join_command = ctx_master.target.instance.runtime_properties['join_command']
-    join_command = 'sudo {0} --skip-preflight-checks'.format(join_command)
+        [x for x in ctx.instance.relationships if
+         x.target.instance.runtime_properties.get(
+             'KUBERNETES_MASTER', False)]
+    if len(masters) != 1:
+        raise NonRecoverableError(
+            'Currently, a Kubernetes node must have a '
+            'dependency on one Kubernetes master.')
+    master = masters[0]
+    bootstrap_token = \
+        master.target.instance.runtime_properties['bootstrap_token']
+    master_ip = \
+        master.target.instance.runtime_properties['master_ip']
+    master_port = \
+        master.target.instance.runtime_properties['master_port']
+
+    # Join the cluster.
+    join_command = \
+        'sudo kubeadm join --token {0} {1}:{2} --skip-preflight-checks'.format(
+            bootstrap_token, master_ip, master_port)
     execute_command(join_command)
 
     # Install weave-related utils
