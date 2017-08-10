@@ -72,7 +72,7 @@ You will need a *Cloudify Manager* running in either AWS, Azure, or Openstack. T
 
 ```shell
 $ cfy install \
-    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.1.zip \
+    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.zip \
     -b k8s \
     -n aws-blueprint.yaml
 ```
@@ -82,7 +82,7 @@ $ cfy install \
 
 ```shell
 $ cfy install \
-    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.1.zip \
+    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.zip \
     -b k8s \
     -n azure-blueprint.yaml
 ```
@@ -92,7 +92,7 @@ $ cfy install \
 
 ```shell
 $ cfy install \
-    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.1.zip \
+    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.zip \
     -b k8s \
     -n openstack-blueprint.yaml
 ```
@@ -102,7 +102,7 @@ You should see something like this when you execute the command:
 
 ```shell
 $ cfy install \
-    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.1.zip \
+    https://github.com/cloudify-examples/simple-kubernetes-blueprint/archive/4.1.1.zip \
     -b k8s \
     -n aws-blueprint.yaml
 Uploading blueprint simple-kubernetes-blueprint/aws-blueprint.yaml...
