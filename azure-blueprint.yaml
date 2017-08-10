@@ -4,12 +4,12 @@ description: >
   This blueprint creates a Kubernetes Cluster.
   It is based on this documentation: https://kubernetes.io/docs/getting-started-guides/kubeadm/
 
-# Several lines are commented. Currently there is not a Centos 7 image that supports Cloud Init. When there is, we will replace the current docker/kubernetes installation method with the commented lines.
-
 imports:
   - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-manager/4.1/resources/rest-service/cloudify/types/types.yaml
   - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-azure-plugin/1.4.3/plugin.yaml
-  - http://www.getcloudify.org/spec/diamond-plugin/1.3.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-incubator/cloudify-utilities-plugin/1.2.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-diamond-plugin/1.3.5/plugin.yaml
+  - https://raw.githubusercontent.com/cloudify-cosmo/cloudify-fabric-plugin/1.5/plugin.yaml
   - imports/kubernetes.yaml
 
 inputs:
@@ -129,6 +129,9 @@ node_templates:
                       yum -t -y install docker-1.12.6-28.git1398f24.el7.centos kubelet-1.6.4-0 kubeadm-1.6.4-0 kubectl-1.6.4-0 kubernetes-cni-0.5.1-0
                       systemctl enable docker && systemctl start docker
                       systemctl enable kubelet && systemctl start kubelet
+                      mkdir -p /tmp/data
+                      chmod a+rwtp /tmp/data
+                      chcon -Rt svirt_sandbox_file_t /tmp/data
     relationships:
     - type: cloudify.azure.relationships.vmx_contained_in_vm
       target: kubernetes_node_host
@@ -565,9 +568,6 @@ node_templates:
       name: {concat:[{get_input: resource_prefix},arg,{get_input: resource_suffix}]}
       location: { get_secret: location }
       azure_config: *azure_config
-#    relationships:
-#      - type: cloudify.relationships.depends_on
-#        target: cloudify_host_cloud_config
 
 groups:
 
@@ -586,7 +586,6 @@ policies:
     targets: [k8s_node_scale_group]
 
 outputs:
-  kubernetes_info:
-    description: Kubernetes Dashboard URL
-    value:
-      url: { concat: ["http://", { get_attribute: [ kubernetes_master_host, public_ip ] } , ":8080/api/v1/proxy/namespaces/kube-system/services/kubernetes-dashboard" ] }
+
+  kubernetes_master_public_ip:
+    value: { get_attribute: [ kubernetes_master_host, public_ip ] }
