@@ -87,13 +87,13 @@ if __name__ == '__main__':
     for cluster in clusters:
         __name = cluster.get('name')
         _cluster = cluster.get('cluster', {})
-        try:
-            _secret_key = '%s_certificate_authority_data' % __name
-            if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-                cfy_client.secrets.create(key=_secret_key, value=_cluster.get('certificate-authority-data'))
-                ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-        except Exception:
-            pass
+        _secret_key = '%s_certificate_authority_data' % __name
+        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+            cfy_client.secrets.create(key=_secret_key, value=_cluster.get('certificate-authority-data'))
+            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
+        else:
+            cfy_client.secrets.update(key=_secret_key, value=_cluster.get('certificate-authority-data'))
+        ctx.instance.runtime_properties['%s_certificate_authority_data' % __name] = _cluster.get('certificate-authority-data')
         _clusters[__name] = _cluster
     del __name
 
@@ -110,17 +110,20 @@ if __name__ == '__main__':
     for user in users:
         __name = user.get('name')
         _user = user.get('user', {})
-        try:
-            _secret_key = '%s_client_certificate_data' % __name
-            if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-                cfy_client.secrets.create(key=_secret_key, value=_user.get('client-certificate-data'))
-                ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-            _secret_key = '%s_client_key_data' % __name
-            if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-                cfy_client.secrets.create(key=_secret_key, value=_user.get('client-key-data'))
-                ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-        except Exception:
-            pass
+        _secret_key = '%s_client_certificate_data' % __name
+        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+            cfy_client.secrets.create(key=_secret_key, value=_user.get('client-certificate-data'))
+            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
+        else:
+            cfy_client.secrets.update(key=_secret_key, value=_user.get('client-certificate-data'))
+        _secret_key = '%s_client_key_data' % __name
+        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+            cfy_client.secrets.create(key=_secret_key, value=_user.get('client-key-data'))
+            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
+        else:
+            cfy_client.secrets.update(key=_secret_key, value=_user.get('client-key-data'))
+        ctx.instance.runtime_properties['%s_client_certificate_data' % __name] = _user.get('client-certificate-data')
+        ctx.instance.runtime_properties['%s_client_key_data' % __name] = _user.get('client-key-data')
         _users[__name] = _user
     del __name
 

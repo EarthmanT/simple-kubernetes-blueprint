@@ -8,6 +8,7 @@ import getpass
 import subprocess
 from cloudify import ctx
 from cloudify.exceptions import OperationRetry
+from cloudify_rest_client.exceptions import CloudifyClientError
 
 JOIN_COMMAND_REGEX = '^kubeadm join[\sA-Za-z0-9\.\:\-\_]*'
 BOOTSTRAP_TOKEN_REGEX = '[a-z0-9]{6}.[a-z0-9]{16}'
@@ -74,21 +75,27 @@ def setup_secrets(_split_master_port, _bootstrap_token):
     ctx.instance.runtime_properties['bootstrap_token'] = _bootstrap_token
     from cloudify import manager
     cfy_client = manager.get_rest_client()
-    try:
-        _secret_key = 'kubernetes_master_ip'
-        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-            cfy_client.secrets.create(key=_secret_key, value=master_ip)
-            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-        _secret_key = 'kubernetes_master_port'
-        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-            cfy_client.secrets.create(key=_secret_key, value=master_port)
-            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-        _secret_key = 'bootstrap_token'
-        if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
-            cfy_client.secrets.create(key=_secret_key, value=_bootstrap_token)
-            ctx.logger.info('Set secret: {0}.'.format(_secret_key))
-    except Exception:
-        pass
+
+    _secret_key = 'kubernetes_master_ip'
+    if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+        cfy_client.secrets.create(key=_secret_key, value=master_ip)
+    else:
+        cfy_client.secrets.update(key=_secret_key, value=master_ip)
+    ctx.logger.info('Set secret: {0}.'.format(_secret_key))
+
+    _secret_key = 'kubernetes_master_port'
+    if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+        cfy_client.secrets.create(key=_secret_key, value=master_port)
+    else:
+        cfy_client.secrets.update(key=_secret_key, value=master_port)
+    ctx.logger.info('Set secret: {0}.'.format(_secret_key))
+
+    _secret_key = 'bootstrap_token'
+    if cfy_client and not len(cfy_client.secrets.list(key=_secret_key)) == 1:
+        cfy_client.secrets.create(key=_secret_key, value=_bootstrap_token)
+    else:
+        cfy_client.secrets.update(key=_secret_key, value=_bootstrap_token)
+    ctx.logger.info('Set secret: {0}.'.format(_secret_key))
 
 
 if __name__ == '__main__':
