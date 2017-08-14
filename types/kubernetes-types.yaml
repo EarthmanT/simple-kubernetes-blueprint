@@ -1,0 +1,77 @@
+node_types:
+
+  cloudify.nodes.Kubernetes:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+
+  cloudify.nodes.Kubernetes.Master:
+    derived_from: cloudify.nodes.Root
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/kubernetes_master/configure.py
+        start:
+          implementation: scripts/kubernetes_master/start.py
+
+  cloudify.nodes.Kubernetes.Node:
+    derived_from: cloudify.nodes.Root
+    properties:
+      labels:
+        default: {}
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/create.py
+        configure:
+          implementation: scripts/kubernetes_node/configure.py
+        start:
+          implementation: fabric.fabric_plugin.tasks.run_task
+          inputs:
+            tasks_file:
+              default: scripts/tasks.py
+            task_name:
+              default: label_node
+            task_properties:
+              default:
+                hostname: { get_attribute: [ SELF, hostname ] }
+                labels: { get_property: [ SELF, labels ] }
+            fabric_env:
+              default:
+                host_string: { get_secret: kubernetes_master_ip }
+                user: { get_input: agent_user }
+                key: { get_secret: agent_key_private }
+        stop:
+          implementation: fabric.fabric_plugin.tasks.run_task
+          inputs:
+            tasks_file:
+              default: scripts/tasks.py
+            task_name:
+              default: stop_node
+            task_properties:
+              default:
+                hostname: { get_attribute: [ SELF, hostname ] }
+            fabric_env:
+              default:
+                host_string: { get_secret: kubernetes_master_ip }
+                user: { get_input: agent_user }
+                key: { get_secret: agent_key_private }
+        delete:
+          implementation: fabric.fabric_plugin.tasks.run_task
+          inputs:
+            tasks_file:
+              default: scripts/tasks.py
+            task_name:
+              default: delete_node
+            task_properties:
+              default:
+                hostname: { get_attribute: [ SELF, hostname ] }
+            fabric_env:
+              default:
+                host_string: { get_secret: kubernetes_master_ip }
+                user: { get_input: agent_user }
+                key: { get_secret: agent_key_private }

@@ -2,6 +2,7 @@
 
 import subprocess
 from cloudify import ctx
+from cloudify.state import ctx_parameters as inputs
 from cloudify.exceptions import NonRecoverableError
 
 START_COMMAND = 'sudo kubeadm join --token {0} {1}:{2}'
@@ -45,16 +46,19 @@ if __name__ == '__main__':
          x.target.instance.runtime_properties.get(
              'KUBERNETES_MASTER', False)]
     if len(masters) != 1:
+        bootstrap_token = inputs.get('bootstrap_token')
+        master_ip = inputs.get('master_ip')
+        master_port = inputs.get('master_port')
+    else:
+        props = masters[0].target.instance.runtime_properties
+        bootstrap_token = props.get('bootstrap_token')
+        master_ip = props.get('master_ip')
+        master_port = props.get('master_port')
+
+    if not bootstrap_token and not master_ip and not master_port:
         raise NonRecoverableError(
-            'Currently, a Kubernetes node must have a '
-            'dependency on one Kubernetes master.')
-    master = masters[0]
-    bootstrap_token = \
-        master.target.instance.runtime_properties['bootstrap_token']
-    master_ip = \
-        master.target.instance.runtime_properties['master_ip']
-    master_port = \
-        master.target.instance.runtime_properties['master_port']
+            'The following required variables are empty: '
+            'bootstrap_token, master_ip and master_port')
 
     # Join the cluster.
     join_command = \
