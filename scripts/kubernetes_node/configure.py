@@ -3,7 +3,7 @@
 import subprocess
 from cloudify import ctx
 from cloudify.state import ctx_parameters as inputs
-from cloudify.exceptions import NonRecoverableError
+from cloudify.exceptions import NonRecoverableError, OperationRetry
 
 START_COMMAND = 'sudo kubeadm join --token {0} {1}:{2}'
 
@@ -64,7 +64,9 @@ if __name__ == '__main__':
     join_command = \
         'sudo kubeadm join --token {0} {1}:{2} --skip-preflight-checks'.format(
             bootstrap_token, master_ip, master_port)
-    execute_command(join_command)
+    output = execute_command(join_command)
+    if output is False:
+        raise OperationRetry('Join cluster failed, retrying.')
 
     # Install weave-related utils
     execute_command('sudo curl -L git.io/weave -o /usr/local/bin/weave')
