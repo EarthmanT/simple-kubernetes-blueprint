@@ -18,7 +18,7 @@ inputs:
   ami:
     description: >
       An AWS AMI. Tested with a Centos 7.0 image.
-    default: ami-72667b65
+    default: { get_secret: centos_core_image }
 
   instance_type:
     description: >
