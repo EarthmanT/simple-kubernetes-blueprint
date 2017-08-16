@@ -35,9 +35,11 @@ node_templates:
           - [kubectl, 1.6.4-0]
           - [kubernetes-cni, 0.5.1-0]
         runcmd:
+          - [ setenforce, Permissive ]
           - [ systemctl, enable, docker ]
           - [ systemctl, start, docker ]
           - [ systemctl, enable, kubelet ]
           - [ systemctl, start, kubelet ]
           - [ mkdir, '-p', /tmp/data ]
           - [ chcon, '-Rt', svirt_sandbox_file_t, /tmp/data ]
+          - [ chmod, 'a+rwtp', /tmp/data ]
